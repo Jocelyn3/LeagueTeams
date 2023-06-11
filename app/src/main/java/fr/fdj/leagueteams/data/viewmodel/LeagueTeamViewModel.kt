@@ -1,5 +1,6 @@
 package fr.fdj.leagueteams.data.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,7 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LeagueTeamViewModel @Inject constructor(
-    private val leagueTeamRepository: LeagueTeamRepository
+    private val repository: LeagueTeamRepository
 ): ViewModel() {
 
     private var _teamList = MutableStateFlow(TeamListUiState(mutableListOf()))
@@ -22,44 +23,59 @@ class LeagueTeamViewModel @Inject constructor(
     var leagueList: StateFlow<LeagueListUiState> = _leagueList
 
 
+    fun updateLocalDb() {
+        Log.d("", "updateLocalDb: ")
+        viewModelScope.launch {
+            repository.updateLocalDb()
+            setLeagueList()
+            setTeamList()
+        }
+    }
+
     fun getTeamList() {
         viewModelScope.launch {
-            leagueTeamRepository.getTeamList().collect{
-                when(it) {
-                    is Resource.Success -> _teamList.value = if (it.data != null) TeamListUiState(it.data.body()?.teamList) else TeamListUiState(null)
-                    is Resource.Loading -> _teamList.value = TeamListUiState(
+            setTeamList()
+        }
+    }
+
+    fun getLeagueList() {
+        viewModelScope.launch {
+            setLeagueList()
+        }
+    }
+
+    private suspend fun setTeamList() {
+        repository.getLocalTeamList().collect{
+            when(it) {
+                is Resource.Success -> _teamList.value = if (it.data != null) TeamListUiState(it.data) else TeamListUiState(null)
+                is Resource.Loading -> _teamList.value = TeamListUiState(
+                    list = null,
+                    isLoading = true
+                )
+                is Resource.Failure -> {
+                    _teamList.value = TeamListUiState(
                         list = null,
-                        isLoading = true
+                        error = true,
+                        errorMessage = it.e?.message
                     )
-                    is Resource.Failure -> {
-                        _teamList.value = TeamListUiState(
-                            list = null,
-                            error = true,
-                            errorMessage = it.e?.message
-                        )
-                    }
                 }
             }
         }
     }
-
-
-    fun getLeagueList() {
-        viewModelScope.launch {
-            leagueTeamRepository.getLeagueList().collect{
-                when(it) {
-                    is Resource.Success -> _leagueList.value = if (it.data != null) LeagueListUiState(it.data.body()?.leagueList) else LeagueListUiState(null)
-                    is Resource.Loading -> _leagueList.value = LeagueListUiState(
+    private suspend fun setLeagueList() {
+        repository.getLocalLeagueList().collect{
+            when(it) {
+                is Resource.Success -> _leagueList.value = if (it.data != null) LeagueListUiState(it.data) else LeagueListUiState(null)
+                is Resource.Loading -> _leagueList.value = LeagueListUiState(
+                    list = null,
+                    isLoading = true
+                )
+                is Resource.Failure -> {
+                    _leagueList.value = LeagueListUiState(
                         list = null,
-                        isLoading = true
+                        error = true,
+                        errorMessage = it.e?.message
                     )
-                    is Resource.Failure -> {
-                        _leagueList.value = LeagueListUiState(
-                            list = null,
-                            error = true,
-                            errorMessage = it.e?.message
-                        )
-                    }
                 }
             }
         }

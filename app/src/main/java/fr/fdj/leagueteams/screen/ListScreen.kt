@@ -25,7 +25,6 @@ fun TeamListScreen(
     viewModel: LeagueTeamViewModel
 ) {
 
-
     LeagueTeamsTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
@@ -46,10 +45,13 @@ fun TeamListScreen(
                     )
                 }
             }
-            else if (teamListUiState.error) Text(text = "Error while fetching team data!")
+            else if (teamListUiState.error) Text(text = "Error while fetching team data! : ${teamListUiState.errorMessage}")
             else if (teamList != null) {
                 if (teamList.isNotEmpty())
                     Text(text = "First Team : ${teamList[0].strTeam.toString()}")
+                else
+                    Text(text = "No team found!!!")
+
             }
 
             // League
@@ -61,7 +63,7 @@ fun TeamListScreen(
                     )
                 }
             }
-            else if (leagueListUiState.error) Text(text = "Error while fetching team data!")
+            else if (leagueListUiState.error) Text(text = "Error while fetching team data! : ${leagueListUiState.errorMessage}")
             else if (leagueList != null) {
                 if (leagueList.isNotEmpty())
                     Text(text = "\nFirst League : ${leagueList[0].strLeague.toString()}")

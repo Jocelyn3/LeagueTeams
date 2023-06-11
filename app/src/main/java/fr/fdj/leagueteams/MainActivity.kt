@@ -28,9 +28,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val viewModel = hiltViewModel<LeagueTeamViewModel>()
-
-            viewModel.getTeamList()
-            viewModel.getLeagueList()
+            viewModel.updateLocalDb()
 
             LeagueTeamsTheme {
                 val context = this
@@ -47,6 +45,7 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
 }
 
 
