@@ -12,6 +12,11 @@ import kotlinx.android.parcel.Parcelize
 data class LeagueEntity(
     @PrimaryKey(autoGenerate = false) @ColumnInfo(name = "idLeague") val idLeague: String,
 
+    @ColumnInfo("strSport") val strSport: String?,
     @ColumnInfo("strLeague") val strLeague: String?,
     @ColumnInfo("strLeagueAlternate") val strLeagueAlternate: String?
-) : Parcelable
+) : Parcelable {
+    fun matches(query: String): Boolean {
+        return strLeague?.contains(query, ignoreCase = true) ?: false
+    }
+}

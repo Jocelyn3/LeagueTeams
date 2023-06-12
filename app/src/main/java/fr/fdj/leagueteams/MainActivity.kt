@@ -27,8 +27,8 @@ class MainActivity : ComponentActivity() {
 
 
         setContent {
-            val viewModel = hiltViewModel<LeagueTeamViewModel>()
-            viewModel.updateLocalDb()
+//            val viewModel = hiltViewModel<LeagueTeamViewModel>()
+//            viewModel.updateLocalDb()
 
             LeagueTeamsTheme {
                 val context = this
@@ -39,7 +39,7 @@ class MainActivity : ComponentActivity() {
                     }
                 ) { contentPadding ->
                     Box(modifier = Modifier.padding(contentPadding)) {
-                        Navigation(context, viewModel)
+                        Navigation(context)
                     }
                 }
             }

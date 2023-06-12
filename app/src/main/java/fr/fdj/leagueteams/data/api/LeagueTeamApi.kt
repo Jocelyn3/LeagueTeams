@@ -6,6 +6,7 @@ import fr.fdj.leagueteams.model.Team
 import fr.fdj.leagueteams.utils.Util
 import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.Query
 
 interface LeagueTeamApi {
     @GET(Util.LEAGUES_ENDPOINT)
@@ -13,6 +14,9 @@ interface LeagueTeamApi {
 
     @GET(Util.TEAMS_ENDPOINT)
     suspend fun getTeams(): Response<TeamListResult>
+
+    @GET(Util.TEAMS_ENDPOINT)
+    suspend fun getTeams(@Query("l") strLeague: String): Response<TeamListResult>
 }
 
 data class TeamListResult(@SerializedName("teams") val teamList: MutableList<Team>)
