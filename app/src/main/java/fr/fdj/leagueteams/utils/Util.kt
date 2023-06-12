@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package fr.fdj.leagueteams.utils
 
 import android.content.Context
@@ -13,7 +15,6 @@ object Util {
     const val LEAGUE_TEAMS_DATABASE = "league_teams_database"
     const val LEAGUES_ENDPOINT = "v1/json/50130162/all_leagues.php"
     const val TEAMS_ENDPOINT = "v1/json/50130162/search_all_teams.php"
-//    const val TEAMS_ENDPOINT = "v1/json/50130162/search_all_teams.php?l=French%20Ligue%201"
 
 
     fun isNetworkAvailable(context: Context?): Boolean {

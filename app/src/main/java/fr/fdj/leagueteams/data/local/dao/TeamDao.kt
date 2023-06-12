@@ -5,8 +5,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import fr.fdj.leagueteams.data.local.entity.TeamEntity
-import fr.fdj.leagueteams.model.League
-import fr.fdj.leagueteams.model.Team
 import fr.fdj.leagueteams.utils.Util
 
 @Dao

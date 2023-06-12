@@ -24,16 +24,12 @@ class LeagueTeamRepoImpl @Inject constructor(
     override suspend fun updateLocalDb() {
         val localLeagueList = leagueDao.getLeagueList()
         if (localLeagueList.isEmpty()) {
-            updateLocalLeagueList(true)
+            updateLocalLeagueList()
         }
-        /*else
-            updateLocalLeagueList(false, localLeagueList)*/
 
         val localTeamList = teamDao.getTeamList()
         if (localTeamList.isEmpty())
-            updateLocalTeamList(true)
-        /*else
-            updateLocalTeamList(false, localTeamList)*/
+            updateLocalTeamList()
     }
 
 
@@ -74,15 +70,12 @@ class LeagueTeamRepoImpl @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
-    private suspend fun updateLocalLeagueList(
-        addAllRemoteList: Boolean,
-        localList: MutableList<LeagueEntity> = arrayListOf()
-    ) {
+    private suspend fun updateLocalLeagueList() {
         getRemoteLeagueList().collect{
             when(it) {
                 is Resource.Success -> {
                     var tempRemoteLeagueList = it.data?.body()?.leagueList
-                    tempRemoteLeagueList = tempRemoteLeagueList?.filter { it.strSport.equals(Util.SOCCER) }?.toMutableList()
+                    tempRemoteLeagueList = tempRemoteLeagueList?.filter { league ->  league.strSport.equals(Util.SOCCER) }?.toMutableList()
                     val remoteLeagueEntityList = arrayListOf<LeagueEntity>()
                     tempRemoteLeagueList?.forEach { league ->
                         remoteLeagueEntityList.add(
@@ -97,24 +90,6 @@ class LeagueTeamRepoImpl @Inject constructor(
 
                     leagueDao.insertAll(remoteLeagueEntityList)
 
-
-                    /*if (remoteLeagueEntityList.isNotEmpty()) {
-                        if (addAllRemoteList)
-                            leagueDao.insertAll(remoteLeagueEntityList)
-                        else {
-                            localList.forEach { league ->
-                                if (!remoteLeagueEntityList.contains(league))
-                                    leagueDao.delete(league.idLeague)
-                            }
-
-                            remoteLeagueEntityList.forEach { league ->
-                                run {
-                                    if (!localList.contains(league))
-                                        leagueDao.insert(league)
-                                }
-                            }
-                        }
-                    }*/
                 }
                 is Resource.Loading -> Log.d(TAG, "saveLeagueListInLocalDb: Saving team list in local Db........")
                 is Resource.Failure -> Log.e(TAG, "saveLeagueListInLocalDb: Fail saving team list in local Db. Error message = " + it.e?.message)
@@ -124,11 +99,8 @@ class LeagueTeamRepoImpl @Inject constructor(
     }
 
     private suspend fun updateLocalTeamList(
-        addAllRemoteList: Boolean,
-        localList: MutableList<TeamEntity> = arrayListOf()
     ) {
         val localLeagueList = leagueDao.getLeagueList()
-        Log.e(TAG, "updateLocalTeamList: ${localLeagueList.size}", )
         localLeagueList.forEach { league ->
             getRemoteTeamList(league.strLeague.toString()).collect{
                 when(it) {
@@ -151,23 +123,6 @@ class LeagueTeamRepoImpl @Inject constructor(
                         teamDao.insertAll(remoteTeamEntityList)
 
 
-                        /*if (remoteTeamEntityList.isNotEmpty()) {
-                            if (addAllRemoteList)
-                                teamDao.insertAll(remoteTeamEntityList)
-                            else {
-                                localList.forEach { team ->
-                                    if (!remoteTeamEntityList.contains(team))
-                                        teamDao.delete(team.idTeam)
-                                }
-
-                                remoteTeamEntityList.forEach { team ->
-                                    run {
-                                        if (!localList.contains(team))
-                                            teamDao.insert(team)
-                                    }
-                                }
-                            }
-                        }*/
                     }
                     is Resource.Loading -> Log.d(TAG, "saveLeagueListInLocalDb: Saving team list in local Db........")
                     is Resource.Failure -> Log.e(TAG, "saveLeagueListInLocalDb: Fail saving team list in local Db. Error message = " + it.e?.message)

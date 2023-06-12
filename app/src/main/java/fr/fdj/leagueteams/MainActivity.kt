@@ -14,11 +14,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import fr.fdj.leagueteams.data.viewmodel.LeagueTeamViewModel
 import fr.fdj.leagueteams.screen.Navigation
 import fr.fdj.leagueteams.ui.theme.LeagueTeamsTheme
+import fr.fdj.leagueteams.utils.Util
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -27,8 +26,6 @@ class MainActivity : ComponentActivity() {
 
 
         setContent {
-//            val viewModel = hiltViewModel<LeagueTeamViewModel>()
-//            viewModel.updateLocalDb()
 
             LeagueTeamsTheme {
                 val context = this
@@ -38,9 +35,11 @@ class MainActivity : ComponentActivity() {
                         TopAppBar { Text(text = "Weather", fontSize = 23.sp, fontWeight = FontWeight.Medium) }
                     }
                 ) { contentPadding ->
-                    Box(modifier = Modifier.padding(contentPadding)) {
-                        Navigation(context)
-                    }
+                    if (Util.isNetworkAvailable(context))
+                        Box(modifier = Modifier.padding(contentPadding)) {
+                            Navigation(context)
+                        }
+                    else Text(text = "Network Unavailable")
                 }
             }
         }

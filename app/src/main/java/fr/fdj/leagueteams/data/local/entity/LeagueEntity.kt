@@ -15,8 +15,4 @@ data class LeagueEntity(
     @ColumnInfo("strSport") val strSport: String?,
     @ColumnInfo("strLeague") val strLeague: String?,
     @ColumnInfo("strLeagueAlternate") val strLeagueAlternate: String?
-) : Parcelable {
-    fun matches(query: String): Boolean {
-        return strLeague?.contains(query, ignoreCase = true) ?: false
-    }
-}
+) : Parcelable
