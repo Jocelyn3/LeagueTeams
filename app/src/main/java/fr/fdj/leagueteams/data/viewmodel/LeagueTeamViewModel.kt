@@ -38,13 +38,18 @@ class LeagueTeamViewModel @Inject constructor(
     private val _searchText = MutableStateFlow("")
     val searchText = _searchText.asStateFlow()
 
+    fun clearText() {
+        _searchText.value = ""
+        _searchTeamList.value = TeamListUiState(_teamList.value.list?.toMutableList())
+    }
+
     fun onSearchTextChange(text: String) {
         _searchTeamList.value = _teamList.value
 
         _searchText.value = text
         var teams: List<TeamEntity>? = _teamList.value.list
 
-        if (text.isNotEmpty() && text.length >= 4) {
+        if (text.length >= 4) {
             teams = teams?.filter { it.matches(text) }
             _searchTeamList.value = TeamListUiState(teams?.toMutableList())
         }
