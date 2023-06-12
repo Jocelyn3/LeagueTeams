@@ -4,11 +4,12 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import fr.fdj.leagueteams.data.local.entity.LeagueEntity
 import fr.fdj.leagueteams.data.local.entity.TeamEntity
 import fr.fdj.leagueteams.data.repository.LeagueTeamRepository
 import fr.fdj.leagueteams.utils.Resource
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -40,15 +41,11 @@ class LeagueTeamViewModel @Inject constructor(
     fun onSearchTextChange(text: String) {
         _searchTeamList.value = _teamList.value
 
-
         _searchText.value = text
         var teams: List<TeamEntity>? = _teamList.value.list
 
         if (text.isNotEmpty()) {
             teams = teams?.filter { it.matches(text) }
-            teams?.forEach { Log.d("", "onSearchTextChange: Team = ${it.strTeam}; League = ${it.strLeague}") }
-            if (teams != null && teams!!.isEmpty()) Log.d("", "onSearchTextChange: team list is empty!!!")
-
             _searchTeamList.value = TeamListUiState(teams?.toMutableList())
         }
     }

@@ -55,7 +55,7 @@ dependencies {
     implementation "androidx.navigation:navigation-compose:$nav_version"
 
     // Coil : For setting image through it's link
-    implementation "io.coil-kt:coil-compose:2.1.0"
+    implementation "io.coil-kt:coil-compose:2.4.0"
 
     // ViewModel Compose
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1"

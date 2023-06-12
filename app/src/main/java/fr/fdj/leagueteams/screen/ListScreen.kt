@@ -1,6 +1,9 @@
 package fr.fdj.leagueteams.screen
 
 import android.content.Context
+import android.content.res.Resources
+import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -17,9 +20,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
+import coil.compose.rememberImagePainter
+import coil.request.ImageRequest
+import coil.transform.CircleCropTransformation
+import fr.fdj.leagueteams.R
 import fr.fdj.leagueteams.data.local.entity.TeamEntity
 import fr.fdj.leagueteams.data.viewmodel.LeagueTeamViewModel
 import fr.fdj.leagueteams.ui.theme.LeagueTeamsTheme
@@ -46,7 +58,6 @@ fun TeamListScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(11.dp),
-            verticalArrangement = Arrangement.Center
         ) {
             TextField(
                 value = searchTextState,
@@ -62,7 +73,9 @@ fun TeamListScreen(
 
             // Teams
             if (isUpdatingState || searchTeamListState.isLoading) {
-                Box(modifier = Modifier.align(CenterHorizontally).padding(9.dp)) {
+                Box(modifier = Modifier
+                    .align(CenterHorizontally)
+                    .padding(9.dp)) {
                     CircularProgressIndicator(
                         modifier = Modifier
                             .align(Alignment.Center),
@@ -85,8 +98,16 @@ fun TeamListScreen(
 
 @Composable
 fun TeamRow(team: TeamEntity) {
+
+
+
     Surface {
-        Text(text = team.strTeam.toString())
+        AsyncImage(
+            model = team.strTeamBadge,
+            contentDescription = "Team badge",
+            modifier = Modifier.padding(7.dp),
+            placeholder = painterResource(id = R.drawable.baseline_refresh_24)
+        )
     }
 }
 
