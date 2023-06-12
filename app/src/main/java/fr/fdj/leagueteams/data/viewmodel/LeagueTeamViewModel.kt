@@ -44,7 +44,7 @@ class LeagueTeamViewModel @Inject constructor(
         _searchText.value = text
         var teams: List<TeamEntity>? = _teamList.value.list
 
-        if (text.isNotEmpty()) {
+        if (text.isNotEmpty() && text.length >= 4) {
             teams = teams?.filter { it.matches(text) }
             _searchTeamList.value = TeamListUiState(teams?.toMutableList())
         }
